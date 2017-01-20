@@ -48,10 +48,18 @@ class SharpObject {
 	public object Get(int id) {
 		object obj = cache[id-1];
 		if (obj != null) {
-			if (obj.GetType().GetTypeInfo().IsClass) {
+#if DOTNET_45
+            if (obj.GetType().GetTypeInfo().IsClass)
+            {
 				return obj;
 			}
-		}
+#else
+            if (obj.GetType().IsClass)
+            {
+                return obj;
+            }
+#endif
+        }
 		return null;
 	}
 };

@@ -18,13 +18,20 @@ class SharpLua {
 		LUAOBJ = 7,
 		SHARPOBJ = 8,
 	};
-	public struct var {
+    public struct var
+    {
 		public var_type type;
 		public int d;
 		public long d64;
 		public double f;
-		public IntPtr ptr;
-	};
+        public IntPtr ptr;
+
+        // Disable CS0649
+        public void SetZero() 
+        {
+            ptr = IntPtr.Zero;
+        }
+    };
 	public struct LuaObject {
 		public int id;
 	};
@@ -133,10 +140,23 @@ class SharpLua {
 			} else if (t == typeof(LuaObject)) {
 				v.type = var_type.LUAOBJ;
 				v.d = ((LuaObject)arg).id;
-			} else if (t.GetTypeInfo().IsClass) {
+			} 
+#if DOTNET_45
+            else if (t.GetTypeInfo().IsClass) 
+            {
 				v.type = var_type.SHARPOBJ;
 				v.d = objects.Query(arg);
-			} else {
+			}
+#else
+            else if (t.IsClass)
+            {
+                v.type = var_type.SHARPOBJ;
+                v.d = objects.Query(arg);
+            }
+#endif
+             
+            else 
+            {
 				return 0;	// error
 			}
 		}
