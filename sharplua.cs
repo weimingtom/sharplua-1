@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Reflection; //for GetTypeInfo
 
 class MonoPInvokeCallbackAttribute : System.Attribute {
 	public MonoPInvokeCallbackAttribute( Type t ) {}
@@ -132,7 +133,7 @@ class SharpLua {
 			} else if (t == typeof(LuaObject)) {
 				v.type = var_type.LUAOBJ;
 				v.d = ((LuaObject)arg).id;
-			} else if (t.IsClass) {
+			} else if (t.GetTypeInfo().IsClass) {
 				v.type = var_type.SHARPOBJ;
 				v.d = objects.Query(arg);
 			} else {

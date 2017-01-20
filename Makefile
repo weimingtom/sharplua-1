@@ -1,12 +1,33 @@
-all : sharplua.dll test.exe
+CC := gcc
+MONO := "/C/Program Files (x86)/Mono/bin/mono"
+MCS := $(MONO) "C:/Program Files (x86)/Mono/lib/mono/4.5/mcs.exe"
+RM := rm -rf
 
-sharplua.dll : sharplua.c
-	gcc -g -Wall -o $@ --shared $^ -I/usr/local/include -L/usr/local/lib -llua
+CFLAGS := -I./lua-5.3.3/include -L./lua-5.3.3/lib -llua
 
-test.exe : test.cs sharplua.cs sharpobject.cs
-	mcs -codepage:utf8 $^
+DLL := sharplua.dll
+BIN := sharplua.exe
+
+all : $(DLL) $(BIN)
+
+$(DLL) : sharplua.c
+	$(CC) -g -Wall -o $@ --shared $^ $(CFLAGS)
+
+$(BIN) : test.cs sharplua.cs sharpobject.cs
+	$(MCS) -codepage:utf8 -out:$@ $^
+
+test: $(BIN)
+	$(MONO) $<
+
+dotnetcore: $(DLL)
+	dotnet restore
+	dotnet build
+	
+dotnetrun: dotnetcore
+	dotnet run
 
 clean:
-	rm sharplua.dll test.exe
-
+	$(RM) *.dll *.exe $(DLL) $(BIN)
+	$(RM) project.lock.json
+	$(RM) bin/ obj/
 

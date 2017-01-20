@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection; //for GetTypeInfo
 
 class SharpObject {
 	object[] cache = new object[1024];	// default pool size 1024
@@ -47,7 +48,7 @@ class SharpObject {
 	public object Get(int id) {
 		object obj = cache[id-1];
 		if (obj != null) {
-			if (obj.GetType().IsClass) {
+			if (obj.GetType().GetTypeInfo().IsClass) {
 				return obj;
 			}
 		}
