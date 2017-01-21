@@ -1,6 +1,9 @@
+SDK := "-sdk:4.5" "-define:NET_4_5"
+#SDK := "-sdk:2" "-define:NET_2"
+
 CC := gcc
 MONO := "/C/Program Files (x86)/Mono/bin/mono"
-MCS := $(MONO) "C:/Program Files (x86)/Mono/lib/mono/4.5/mcs.exe"
+MCS := $(MONO) "C:/Program Files (x86)/Mono/lib/mono/4.5/mcs.exe" $(SDK)
 RM := rm -rf
 
 CFLAGS := -I./lua-5.3.3/include -L./lua-5.3.3/lib -llua

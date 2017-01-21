@@ -141,7 +141,7 @@ class SharpLua {
 				v.type = var_type.LUAOBJ;
 				v.d = ((LuaObject)arg).id;
 			} 
-#if DOTNET_45
+#if DOTNET_45 || NET_4_5 || DOTNETCORE
             else if (t.GetTypeInfo().IsClass) 
             {
 				v.type = var_type.SHARPOBJ;

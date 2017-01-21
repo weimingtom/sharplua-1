@@ -4,7 +4,8 @@
     "debugType": "portable",
     "emitEntryPoint": true,
     "copyToOutput": [ "sharplua.dll" ],
-    "outputName": "sharplua.hello"
+    "outputName": "sharplua.hello",
+    "define": [ "DOTNETCORE" ]
   },
   "dependencies": {},
   "frameworks": {
