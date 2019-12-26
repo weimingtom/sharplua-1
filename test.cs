@@ -3,7 +3,7 @@ using System;
 public class HelloWorld
 {
 	// Need code gen
-	static string FuncCallByLua(int n, SharpLua.var[] argv) {
+	static string FuncCallByLua(int n, SharpLua.var_[] argv) {
 		Console.WriteLine("I'm in lua :");
 		for (int i=1; i<n; i++) {
 			Console.WriteLine("Args {0} type {1}", i, argv[i].type);
@@ -34,5 +34,7 @@ public class HelloWorld
 		l.CallFunction(init, func);
 		SharpLua.LuaObject callback = l.GetFunction("callback");
 		l.CallFunction(callback, 1, null, "string");
+		
+		Console.ReadKey();
 	}
 }

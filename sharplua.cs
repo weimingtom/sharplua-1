@@ -18,7 +18,7 @@ class SharpLua {
 		LUAOBJ = 7,
 		SHARPOBJ = 8,
 	};
-    public struct var
+    public struct var_
     {
 		public var_type type;
 		public int d;
@@ -35,15 +35,19 @@ class SharpLua {
 	public struct LuaObject {
 		public int id;
 	};
+#if UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_4 || UNITY_4_5 || UNITY_4_6 || UNITY_5
+	const string DLL = "sharplua";
+#else   
 	const string DLL = "sharplua.dll";
+#endif
 	const int max_args = 256;	// Also defined in sharplua.c MAXRET
 
 	IntPtr L;
-	var[] args = new var[max_args];
+	var_[] args = new var_[max_args];
 	string[] strs = new string[max_args];
 	static SharpObject objects = new SharpObject();	// All the SharpLua class share one one objects map
 
-	public delegate string SharpFunction(int n, var[] argv);
+	public delegate string SharpFunction(int n, var_[] argv);
 
 	[DllImport (DLL, CallingConvention=CallingConvention.Cdecl)]
 	static extern IntPtr c_newvm([MarshalAs(UnmanagedType.LPStr)] string name,  Callback cb, out IntPtr err);
@@ -52,16 +56,16 @@ class SharpLua {
 	[DllImport (DLL, CallingConvention=CallingConvention.Cdecl)]
 	static extern IntPtr c_getglobal(IntPtr L, [MarshalAs(UnmanagedType.LPStr)] string key, out int id);
 	[DllImport (DLL, CallingConvention=CallingConvention.Cdecl)]
-	static extern int c_callfunction(IntPtr L, int argc, [In, Out, MarshalAs(UnmanagedType.LPArray, SizeConst=max_args)] var[] argv,
+	static extern int c_callfunction(IntPtr L, int argc, [In, Out, MarshalAs(UnmanagedType.LPArray, SizeConst=max_args)] var_[] argv,
 		int strc, [In, MarshalAs(UnmanagedType.LPArray, ArraySubType=UnmanagedType.LPStr, SizeParamIndex=3)] string[] strs);
 	[DllImport (DLL, CallingConvention=CallingConvention.Cdecl)]
 	static extern int c_collectgarbage(IntPtr L, int n, [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex=1)] int[] result);
 	[DllImport (DLL, CallingConvention=CallingConvention.Cdecl)]
 	static extern int c_pushstring(IntPtr ud, [MarshalAs(UnmanagedType.LPStr)] string str);
 
-	delegate int Callback(int argc, [In, Out, MarshalAs(UnmanagedType.LPArray, SizeConst=max_args)] var[] argv, IntPtr sud);
+	delegate int Callback(int argc, [In, Out, MarshalAs(UnmanagedType.LPArray, SizeConst=max_args)] var_[] argv, IntPtr sud);
 	[MonoPInvokeCallback (typeof (Callback))]
-	static int CallSharp(int argc, [In, Out, MarshalAs(UnmanagedType.LPArray, SizeConst=max_args)] var[] argv, IntPtr sud) {
+	static int CallSharp(int argc, [In, Out, MarshalAs(UnmanagedType.LPArray, SizeConst=max_args)] var_[] argv, IntPtr sud) {
 		try {
 			SharpFunction f = (SharpFunction)objects.Get(argv[0].d);
 			string ret = f(argc, argv);
@@ -114,7 +118,7 @@ class SharpLua {
 		}
 	}
 
-	int pushvalue(ref var v, object arg) {
+	int pushvalue(ref var_ v, object arg) {
 		if (arg == null) {
 			v.type = (int)var_type.NIL;
 		} else {
